@@ -20,7 +20,8 @@ export default function Home() {
 
   const action = async (formData: FormData) => {
     try {
-      await submitAction(formData)
+      const res = await submitAction(formData)
+      toast(res)
     } catch (error) {
       console.log({ error })
       toast('Upload Failed')

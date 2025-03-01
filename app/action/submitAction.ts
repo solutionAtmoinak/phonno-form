@@ -15,21 +15,21 @@ export default async function submitAction(formData: FormData) {
 
   console.log("Sending Data:", records);
 
-  const googleAppsScriptURL =
-    "https://script.google.com/macros/s/AKfycbzHDFa5QEoDN9n5br6YFF2w4vpy2OujzkHaJk2t-AIYLzJysbwZMbViXmQvO0PVl9U41w/exec";
+  const googleAppsScriptURL = process.env.NEXT_PUBLIC_SCRIPT_URL;
 
-
-    // const googleResponse = await fetch(googleAppsScriptURL, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/x-www-form-urlencoded" }, // ✅ Correct Content-Type
-    //   body: JSON.stringify({ data: records }), // ✅ Wrap data in an object for better parsing
-    // });
-
-    axios.post(googleAppsScriptURL, records,
-        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-    ).then((res) => {
-        console.log(res.data)
-    }).catch((err) => {
-        console.log({err})
-    })
+  if (googleAppsScriptURL) {
+    try {
+      const res = await axios.post(
+        googleAppsScriptURL,
+        JSON.stringify({ data: records }),
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      );
+      return res.data;
+    } catch (err) {
+      console.log({ err });
+      throw new Error("Failed to added record");
+    }
+  }
 }
